@@ -1,0 +1,40 @@
+services:
+  auth_db:
+    image: postgres:16-alpine
+    container_name: auth_db_srv
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+      POSTGRES_DB: ${DB_NAME:-postgres}
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    volumes:
+      - AuthPgData:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - auth_network
+
+  auth:
+    build: .
+    container_name: auth_srv
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS:-postgres}
+      DB_NAME: ${DB_NAME:-postgres}
+      DB_HOST: ${DB_HOST:-auth_db}
+      DB_PORT: ${DB_PORT:-5432}
+    depends_on:
+      - db
+    networks:
+      - auth_network
+
+volumes:
+  AuthPgData:
+
+networks:
+  auth_network:
