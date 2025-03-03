@@ -1,0 +1,44 @@
+definitions:
+  models.RegisterRequest:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      second:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is a simple authentication microservice using Go Fiber.
+  title: JWT Auth Microservice API
+  version: "1.0"
+paths:
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user and sets up initial properties
+      parameters:
+      - description: User Registration Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema: {}
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Register a new user
+      tags:
+      - auth
+swagger: "2.0"
