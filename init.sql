@@ -24,7 +24,7 @@ create table if not exists auth.properties (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     max_sessions integer default 5,
-    session_expiry integer default 7 -- in days
+    session_expires integer default 7 -- in days
 );
 
 create table if not exists auth.accesses (
