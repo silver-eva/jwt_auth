@@ -17,7 +17,9 @@ services:
       - auth_network
 
   auth:
-    build: .
+    build:
+      context: ./
+      dockerfile: ${DF:-Dockerfile}
     container_name: auth_srv
     restart: unless-stopped
     ports:
