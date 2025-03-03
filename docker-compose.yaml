@@ -29,7 +29,7 @@ services:
       DB_HOST: ${DB_HOST:-auth_db}
       DB_PORT: ${DB_PORT:-5432}
     depends_on:
-      - db
+      - auth_db
     networks:
       - auth_network
 

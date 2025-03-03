@@ -9,10 +9,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code
-COPY ./app .
+COPY . .
 
 # Build the Go application
-RUN CGO_ENABLED=0 GOOS=linux go build -o api
+RUN CGO_ENABLED=0 GOOS=linux go build -o api ./cmd
 
 # Use a minimal base image for the final build
 FROM scratch
@@ -20,6 +20,7 @@ FROM scratch
 # # Copy the compiled binary and necessary files from the builder stage
 COPY --from=builder /app/api ./api
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/config.yaml ./config.yaml
 
 # Expose the application port
 EXPOSE 8080

@@ -1,0 +1,9 @@
+PostgresHost: "auth_db"
+PostgresPort: 5432
+PostgresUser: "postgres"
+PostgresPass: "postgres"
+PostgresDB: "postgres"
+Hash: "bcrypt"
+HashComplixity: 12
+JWTSecret: "secret"
+JWTExpiry: 7

@@ -1,15 +1,17 @@
 package main
 
 import (
-	"jwt_auth/app/config"
-	"jwt_auth/app/database"
-	"jwt_auth/app/middleware"
-	"jwt_auth/app/routers"
-	"jwt_auth/app/utils"
+	"fmt"
+	"jwt_auth/config"
+	"jwt_auth/database"
+	"jwt_auth/middleware"
+	"jwt_auth/routers"
+	"jwt_auth/utils"
 
-	_ "jwt_auth/app/docs"
+	_ "jwt_auth/docs"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 )
 
 // @title JWT Auth Microservice API
@@ -18,11 +20,15 @@ import (
 // @host localhost:8000
 func main() {
 	configs := config.NewConfig()
+
+	fmt.Printf("%+v\n", configs)
+
 	utils.InitPassword(configs)
 	database.Connect(configs)
 
 	app := fiber.New()
 	app.Use(middleware.LoggerMiddleware())
+	app.Get("/docs/*", swagger.HandlerDefault)
 
 	routers.SetupRouters(app)
 	app.Listen(":8000")

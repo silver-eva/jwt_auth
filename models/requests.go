@@ -1,7 +1,7 @@
 package models
 
 type RegisterRequest struct {
-	Username string `json:"username"`
+	Uname string `json:"uname"`
 	Name     string `json:"name"`
 	Second   string `json:"second"`
 	Password string `json:"password"`

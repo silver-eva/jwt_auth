@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"jwt_auth/app/config"
+	"jwt_auth/config"
 )
 
 type PasswordHasher interface {
@@ -21,4 +21,3 @@ func InitPassword(cfg *config.Config) {
 		PWD = NewBcryptHasher(cfg.HashComplixity) // default to bcrypt
 	}
 }
-

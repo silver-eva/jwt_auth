@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"jwt_auth/app/handlers"
+	"jwt_auth/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )

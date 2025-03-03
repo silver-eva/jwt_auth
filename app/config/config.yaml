@@ -1,9 +1,0 @@
-postgres_host: "localhost"
-postgres_port: 5432
-postgres_user: "postgres"
-postgres_pass: "postgres"
-postgres_db: "auth"
-hash: "bcrypt"
-hash_complixity: 12
-jwt_secret: "secret"
-jwt_expiry: 7

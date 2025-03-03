@@ -20,7 +20,10 @@ type Config struct {
 func NewConfig() *Config {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
+
 	viper.AddConfigPath(".")
+	// viper.AddConfigPath("./config")
+	
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatal("Can't read config:", err)
