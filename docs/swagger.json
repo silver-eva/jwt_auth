@@ -1,13 +1,63 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a simple authentication microservice using Go Fiber.",
-        "title": "JWT Auth Microservice API",
-        "contact": {},
+        "description": "JWT Auth API",
+        "title": "JWT Auth API",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "uOY9m@example.com"
+        },
         "version": "1.0"
     },
-    "host": "localhost:8000",
+    "basePath": "/",
     "paths": {
+        "/login": {
+            "post": {
+                "description": "Authenticates a user using username and password, generates access and refresh tokens, and manages user sessions.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "User login request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.LoggedInUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {}
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "description": "Creates a new user and sets up initial properties",
@@ -35,17 +85,49 @@
                 "responses": {
                     "201": {
                         "description": "Created",
-                        "schema": {}
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {}
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
+        "models.LoggedInUserResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.LoginUserRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "uname": {
+                    "type": "string"
+                }
+            }
+        },
         "models.RegisterRequest": {
             "type": "object",
             "properties": {
@@ -58,7 +140,7 @@
                 "second": {
                     "type": "string"
                 },
-                "username": {
+                "uname": {
                     "type": "string"
                 }
             }

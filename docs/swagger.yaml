@@ -1,4 +1,19 @@
+basePath: /
 definitions:
+  models.LoggedInUserResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  models.LoginUserRequest:
+    properties:
+      password:
+        type: string
+      uname:
+        type: string
+    type: object
   models.RegisterRequest:
     properties:
       name:
@@ -7,16 +22,50 @@ definitions:
         type: string
       second:
         type: string
-      username:
+      uname:
         type: string
     type: object
-host: localhost:8000
 info:
-  contact: {}
-  description: This is a simple authentication microservice using Go Fiber.
-  title: JWT Auth Microservice API
+  contact:
+    email: uOY9m@example.com
+    name: API Support
+    url: http://www.swagger.io/support
+  description: JWT Auth API
+  title: JWT Auth API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user using username and password, generates access
+        and refresh tokens, and manages user sessions.
+      parameters:
+      - description: User login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoggedInUserResponse'
+        "400":
+          description: Bad Request
+          schema: {}
+        "401":
+          description: Unauthorized
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+      summary: User login
+      tags:
+      - auth
   /register:
     post:
       consumes:
@@ -34,10 +83,16 @@ paths:
       responses:
         "201":
           description: Created
-          schema: {}
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Register a new user
       tags:
       - auth
