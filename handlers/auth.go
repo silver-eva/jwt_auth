@@ -10,16 +10,16 @@ import (
 	"github.com/google/uuid"
 )
 
-// RegisterUser registers a new user
-// @Summary Register a new user
-// @Description Creates a new user and sets up initial properties
-// @Tags auth
-// @Accept json
-// @Produce json
-// @Param request body models.RegisterRequest true "User Registration Request"
-// @Success 201 {object} any
-// @Failure 400 {object} any
-// @Router /register [post]
+
+//	@Summary		Register a new user
+//	@Description	Creates a new user and sets up initial properties
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.RegisterRequest	true	"User Registration Request"
+//	@Success		201		{object}	map[string]string
+//	@Failure		400		{object}	map[string]string
+//  @Router			/register [post]
 func Register(c *fiber.Ctx) error {
 
 	var req models.RegisterRequest
@@ -29,7 +29,7 @@ func Register(c *fiber.Ctx) error {
 
 	hashedPassword, _ := utils.PWD.HashPassword(req.Password)
 
-	user := models.User{ // TODO: make User.FromRequest function
+	user := models.User{
 		Uname: req.Uname,
 		Name:     req.Name,
 		Second:   req.Second,

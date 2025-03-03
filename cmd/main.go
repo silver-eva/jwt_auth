@@ -11,13 +11,18 @@ import (
 	_ "jwt_auth/docs"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/swagger"
+	"github.com/swaggo/fiber-swagger"
 )
 
-// @title JWT Auth Microservice API
+// @title JWT Auth API
 // @version 1.0
-// @description This is a simple authentication microservice using Go Fiber.
-// @host localhost:8000
+// @description JWT Auth API
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email uOY9m@example.com
+
+// @BasePath /
 func main() {
 	configs := config.NewConfig()
 
@@ -29,8 +34,8 @@ func main() {
 
 	app := fiber.New()
 	app.Use(middleware.LoggerMiddleware())
-	app.Get("/docs/*", swagger.HandlerDefault)
+	app.Get("/docs/*", fiberSwagger.WrapHandler)
 
 	routers.SetupRouters(app)
-	app.Listen(":8000")
+	app.Listen(fmt.Sprintf(":%d", configs.AppPort))
 }

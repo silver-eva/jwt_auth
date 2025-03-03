@@ -15,6 +15,7 @@ type Config struct {
 	HashComplixity interface{}
 	JWTSecret string
 	JWTExpiry int
+	AppPort int
 }
 
 func NewConfig() *Config {
@@ -22,7 +23,7 @@ func NewConfig() *Config {
 	viper.SetConfigType("yaml")
 
 	viper.AddConfigPath(".")
-	// viper.AddConfigPath("./config")
+	viper.AddConfigPath("../")
 	
 	err := viper.ReadInConfig()
 	if err != nil {

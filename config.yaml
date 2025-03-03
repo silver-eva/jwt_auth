@@ -7,3 +7,4 @@ Hash: "bcrypt"
 HashComplixity: 12
 JWTSecret: "secret"
 JWTExpiry: 7
+AppPort: 8000
