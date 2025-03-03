@@ -11,6 +11,10 @@ type Config struct {
 	PostgresUser string
 	PostgresPass string
 	PostgresDB   string
+	Hash     string
+	HashComplixity interface{}
+	JWTSecret string
+	JWTExpiry int
 }
 
 func NewConfig() *Config {
