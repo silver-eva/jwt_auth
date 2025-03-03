@@ -11,6 +11,6 @@ type Session struct {
 	Created    time.Time `json:"created" gorm:"default:now()"`
 	Refreshed  time.Time `json:"refreshed" gorm:"default:now()"`
 	Terminated *time.Time `json:"terminated"`
-	Refresh    string    `json:"refresh_token" gorm:"not null"`
+	Token    string    	`json:"token" gorm:"not null"`
 	Active     bool      `json:"active" gorm:"default:true"`
 }
