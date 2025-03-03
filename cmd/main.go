@@ -24,6 +24,7 @@ func main() {
 	fmt.Printf("%+v\n", configs)
 
 	utils.InitPassword(configs)
+	utils.InitJWT(configs.JWTSecret, configs.JWTExpiry)
 	database.Connect(configs)
 
 	app := fiber.New()
