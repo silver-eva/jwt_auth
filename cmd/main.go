@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"jwt_auth/config"
+
 	"jwt_auth/database"
 	"jwt_auth/middleware"
 	"jwt_auth/routers"
@@ -11,11 +12,12 @@ import (
 	_ "jwt_auth/docs"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/swaggo/fiber-swagger"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
+
 // @title JWT Auth API
-// @version 1.0
+// @version 2.0
 // @description JWT Auth API
 
 // @contact.name API Support
@@ -26,7 +28,7 @@ import (
 func main() {
 	configs := config.NewConfig()
 
-	fmt.Printf("%+v\n", configs)
+	// fmt.Printf("%+v\n", configs)
 
 	utils.InitPassword(configs)
 	utils.InitJWT(configs.JWTSecret, configs.JWTExpiry)
@@ -34,6 +36,11 @@ func main() {
 
 	app := fiber.New()
 	app.Use(middleware.LoggerMiddleware())
+
+	
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Status(200).JSON(map[string]string{"status": "ok"})
+	})
 	app.Get("/docs/*", fiberSwagger.WrapHandler)
 
 	routers.SetupRouters(app)

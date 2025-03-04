@@ -1,5 +1,10 @@
 basePath: /
 definitions:
+  models.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
   models.LoggedInUserResponse:
     properties:
       access_token:
@@ -32,7 +37,7 @@ info:
     url: http://www.swagger.io/support
   description: JWT Auth API
   title: JWT Auth API
-  version: "1.0"
+  version: "2.0"
 paths:
   /login:
     post:
@@ -56,13 +61,16 @@ paths:
             $ref: '#/definitions/models.LoggedInUserResponse'
         "400":
           description: Bad Request
-          schema: {}
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "401":
           description: Unauthorized
-          schema: {}
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Not Found
-          schema: {}
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
       summary: User login
       tags:
       - auth
@@ -84,15 +92,11 @@ paths:
         "201":
           description: Created
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Register a new user
       tags:
       - auth

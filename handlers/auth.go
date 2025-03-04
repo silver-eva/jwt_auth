@@ -17,14 +17,14 @@ import (
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		models.RegisterRequest	true	"User Registration Request"
-//	@Success		201		{object}	map[string]string
-//	@Failure		400		{object}	map[string]string
+//	@Success		201		{object}	models.ErrorResponse
+//	@Failure		400		{object}	models.ErrorResponse
 //  @Router			/register [post]
 func Register(c *fiber.Ctx) error {
 
 	var req models.RegisterRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{"message": "Bad request"})
+		return c.Status(400).JSON(models.ErrorResponse{Message: "Invalid request body"})
 	}
 
 	hashedPassword, _ := utils.PWD.HashPassword(req.Password)
@@ -40,20 +40,17 @@ func Register(c *fiber.Ctx) error {
 	
 	if err := tx.Create(&user).Error; err != nil {
 		tx.Rollback()
-		return c.Status(400).JSON(fiber.Map{"message": "User creation failed"})
+		return c.Status(400).JSON(models.ErrorResponse{Message: "User creation failed"})
 	}
 	if err := tx.Create(&models.Properties{UserID: user.ID}).Error; err != nil {
 		tx.Rollback()
-		return c.Status(400).JSON(fiber.Map{"message": "User.Properties creation failed"})
+		return c.Status(400).JSON(models.ErrorResponse{Message: "User.Properties creation failed"})
 	}
 
 	tx.Commit()
 
 	return c.Status(201).JSON(fiber.Map{"message": "User created successfully"})
 }
-
-
-
 
 // Login authenticates a user based on the provided credentials.
 // @Summary User login
@@ -63,25 +60,25 @@ func Register(c *fiber.Ctx) error {
 // @Produce json
 // @Param request body models.LoginUserRequest true "User login request"
 // @Success 200 {object} models.LoggedInUserResponse
-// @Failure 400 {object} any
-// @Failure 401 {object} any
-// @Failure 404 {object} any
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 401 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
 // @Router /login [post]
 func Login(c *fiber.Ctx) error {
 	var req models.LoginUserRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(400).JSON(fiber.Map{"message": "Bad request"})
+		return c.Status(400).JSON(models.ErrorResponse{Message: "Invalid request body"})
 	}
 
 	// Find user by username
 	var user models.User
 	if err := database.DB.Where("uname = ?", req.Username).First(&user).Error; err != nil {
-		return c.Status(404).JSON(fiber.Map{"message": "User not found!"})
+		return c.Status(404).JSON(models.ErrorResponse{Message: "User not found"})
 	}
 
 	// Check password
 	if !utils.PWD.CheckPasswordHash(req.Password, user.Password) {
-		return c.Status(401).JSON(fiber.Map{"message": "Bad credentials!"})
+		return c.Status(401).JSON(models.ErrorResponse{Message: "Bad credentials"})
 	}
 
 	// Get user properties
@@ -116,7 +113,7 @@ func Login(c *fiber.Ctx) error {
 		Active:    true,
 	}
 	if database.DB.Create(&session).Error != nil {
-		return c.Status(400).JSON(fiber.Map{"message": "Session creation failed"})
+		return c.Status(400).JSON(models.ErrorResponse{Message: "Session creation failed"})
 	}
 
 	return c.Status(200).JSON(models.LoggedInUserResponse{
