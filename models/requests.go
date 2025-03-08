@@ -11,3 +11,11 @@ type LoginUserRequest struct {
 	Username string `json:"uname"`
 	Password string `json:"password"`
 }
+
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+type ResetPasswordRequest struct {
+	Password string `json:"password"`
+}

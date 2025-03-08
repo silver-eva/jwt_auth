@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"jwt_auth/database"
 	"jwt_auth/models"
 	"jwt_auth/utils"
@@ -9,7 +10,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
-
 
 //	@Summary		Register a new user
 //	@Description	Creates a new user and sets up initial properties
@@ -115,6 +115,60 @@ func Login(c *fiber.Ctx) error {
 	if database.DB.Create(&session).Error != nil {
 		return c.Status(400).JSON(models.ErrorResponse{Message: "Session creation failed"})
 	}
+
+	return c.Status(200).JSON(models.LoggedInUserResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	})
+}
+
+
+func terminateSession(session models.Session) {
+	session.Active = false
+	session.Terminated = time.Now()
+
+	database.DB.Save(&session)
+}
+
+//	@Summary		Refreshes access token using a valid refresh token
+//	@Description	Validates the provided refresh token and generates a new access token.
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		models.RefreshTokenRequest	true	"Refresh token request"
+//	@Success		200		{object}	models.LoggedInUserResponse
+//	@Failure		400		{object}	models.ErrorResponse
+//	@Failure		401		{object}	models.ErrorResponse
+//  @Router			/refresh [post]
+func Refresh(c *fiber.Ctx) error {
+	var req models.RefreshTokenRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(400).JSON(models.ErrorResponse{Message: "Invalid request body"})
+	}
+
+	session := models.Session{}
+	if err := database.DB.Where("token = ? AND active = ?", req.RefreshToken, true).First(&session).Error; err != nil {
+		return c.Status(401).JSON(models.ErrorResponse{Message: "Invalid refresh token"})
+	}
+
+	claims, err := utils.JWT.ValidateToken(req.RefreshToken)
+	if err != nil {
+		terminateSession(session)
+		return c.Status(401).JSON(models.ErrorResponse{Message: fmt.Sprintf("Invalid refresh token: %v", err)})
+	}
+
+	userId, ok := claims["user_id"].(string)
+	if !ok {
+		terminateSession(session)
+		return c.Status(401).JSON(models.ErrorResponse{Message: "Invalid refresh token"})
+	}
+
+	accessToken, _ := utils.JWT.GenerateAccessToken(uuid.MustParse(userId))
+	refreshToken, _ := utils.JWT.GenerateRefreshToken(uuid.MustParse(userId), 30)
+
+	session.Refreshed = time.Now()
+	session.Token = refreshToken
+	database.DB.Save(&session)
 
 	return c.Status(200).JSON(models.LoggedInUserResponse{
 		AccessToken:  accessToken,
