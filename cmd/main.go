@@ -12,7 +12,7 @@ import (
 	_ "jwt_auth/docs"
 
 	"github.com/gofiber/fiber/v2"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
+	"github.com/swaggo/fiber-swagger"
 )
 
 
