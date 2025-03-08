@@ -19,7 +19,9 @@ services:
   auth:
     build:
       context: ./
-      dockerfile: ${DF:-Dockerfile}
+      dockerfile: ${DF:-Dockerfile.dev}
+    volumes:
+      - ./:/app
     container_name: auth_srv
     restart: unless-stopped
     ports:
